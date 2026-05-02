@@ -18,7 +18,20 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping("/depositMoney")
-    ResponseEntity<TransactionDto> depositMoney(@RequestBody TransactionRequestDto transactionRequestDto) {
-        return transactionService.depositMoney(transactionRequestDto);
+    public ResponseEntity<TransactionDto> depositMoney(
+            @RequestBody TransactionRequestDto request
+    ) {
+        return ResponseEntity.ok(
+                transactionService.depositMoney(request)
+        );
+    }
+
+    @PostMapping("/withdrawMoney")
+    ResponseEntity<TransactionDto> withdrawMoney(
+            @RequestBody TransactionRequestDto request
+    ) {
+        return ResponseEntity.ok(
+                transactionService.withdrawMoney(request)
+        );
     }
 }

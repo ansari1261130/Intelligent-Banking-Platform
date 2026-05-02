@@ -4,70 +4,99 @@ import com.springboot.Intelligent.Banking.Platform.Dto.TransactionDto.Transactio
 import com.springboot.Intelligent.Banking.Platform.Dto.TransactionDto.TransactionDto;
 import com.springboot.Intelligent.Banking.Platform.Entities.Account.Account;
 import com.springboot.Intelligent.Banking.Platform.Entities.Transaction.Transaction;
-import com.springboot.Intelligent.Banking.Platform.Entities.Transaction.TransactionMode;
-import com.springboot.Intelligent.Banking.Platform.Entities.Transaction.TransactionStatus;
 import com.springboot.Intelligent.Banking.Platform.Entities.Transaction.TransactionType;
 import com.springboot.Intelligent.Banking.Platform.Repositories.AccountRepository;
 import com.springboot.Intelligent.Banking.Platform.Repositories.TransactionRepository;
+import com.springboot.Intelligent.Banking.Platform.mapper.TransactionMapper;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TransactionService {
 
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
+    private final TransactionFactory transactionFactory;
+    private final TransactionMapper transactionMapper;
 
 
     @Transactional
-    public ResponseEntity<TransactionDto> depositMoney(TransactionRequestDto request) {
-        try {
-            if (request.getAmount() <= 0) {
-                return ResponseEntity.badRequest().build();
-            }
+    public TransactionDto depositMoney(TransactionRequestDto request) {
 
-            Account account = accountRepository
-                    .findByAccountNumber(request.getAccountNumber())
-                    .orElseThrow(() -> new RuntimeException("Account not found"));
+        validateAmount(request.getAmount());
 
-            account.setAccountBalance(account.getAccountBalance() + request.getAmount());
-            accountRepository.save(account);
+        Account account = getAccount(request.getAccountNumber());
 
-            Transaction transaction = new Transaction();
-            transaction.setTransactionAmount(request.getAmount());
-            transaction.setTransactionType(TransactionType.DEPOSIT);
-            transaction.setTransactionMode(TransactionMode.UPI);
-            transaction.setTransactionStatus(TransactionStatus.SUCCESS);
-            transaction.setTransactionDate(LocalDate.now());
-            transaction.setTransactionTime(LocalDateTime.now());
+        account.setAccountBalance(
+                account.getAccountBalance() + request.getAmount()
+        );
 
-            transaction.setAccount(account);
+        accountRepository.save(account);
 
-            Transaction savedTxn = transactionRepository.save(transaction);
+        Transaction transaction =
+                transactionFactory.createTransaction(
+                        account,
+                        request.getAmount(),
+                        TransactionType.DEPOSIT
+                );
 
-            TransactionDto response = new TransactionDto(
-                    savedTxn.getTransactionId(),
-                    account.getAccountNumber(),
-                    savedTxn.getTransactionAmount(),
-                    account.getAccountBalance(),
-                    savedTxn.getTransactionMode(),
-                    savedTxn.getTransactionType(),
-                    savedTxn.getTransactionStatus(),
-                    savedTxn.getTransactionDate(),
-                    savedTxn.getTransactionTime()
-            );
+        Transaction savedTransaction =
+                transactionRepository.save(transaction);
 
-            return ResponseEntity.ok(response);
+        return transactionMapper.toDto(
+                savedTransaction,
+                account
+        );
+    }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).build();
+
+    @Transactional
+    public TransactionDto withdrawMoney(TransactionRequestDto request) {
+
+        validateAmount(request.getAmount());
+
+        Account account = getAccount(request.getAccountNumber());
+
+        if (request.getAmount() > account.getAccountBalance()) {
+            throw new RuntimeException("Insufficient balance");
         }
+
+        account.setAccountBalance(
+                account.getAccountBalance() - request.getAmount()
+        );
+
+        accountRepository.save(account);
+
+        Transaction transaction =
+                transactionFactory.createTransaction(
+                        account,
+                        request.getAmount(),
+                        TransactionType.WITHDRAW
+                );
+
+        Transaction savedTransaction =
+                transactionRepository.save(transaction);
+
+        return transactionMapper.toDto(
+                savedTransaction,
+                account
+        );
+    }
+
+    private void validateAmount(double amount) {
+        if (amount <= 0) {
+            throw new RuntimeException("Invalid transaction amount");
+        }
+    }
+
+
+    private Account getAccount(Long accountNumber) {
+        return accountRepository
+                .findByAccountNumber(accountNumber)
+                .orElseThrow(
+                        () -> new RuntimeException("Account not found")
+                );
     }
 }
