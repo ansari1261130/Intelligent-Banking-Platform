@@ -99,4 +99,25 @@ public class TransactionService {
                         () -> new RuntimeException("Account not found")
                 );
     }
+
+
+    public TransactionDto transferMoney(TransactionRequestDto request) {
+        Account sourceAccount = getAccount(request.getAccountNumber());
+        Account destinationAccount = getAccount(request.getAccountNumber());
+
+        if(sourceAccount.getAccountBalance() < request.getAmount()) {
+            throw new RuntimeException("Insufficient balance");
+        }
+        sourceAccount.setAccountBalance(sourceAccount.getAccountBalance() - request.getAmount());
+
+        destinationAccount.setAccountBalance(destinationAccount.getAccountBalance() + request.getAmount());
+
+        accountRepository.save(sourceAccount);
+        accountRepository.save(destinationAccount);
+
+        Transaction transaction = transactionFactory.createTransaction(sourceAccount, request.getAmount(), TransactionType.TRANSFER);
+        Transaction savedTransaction = transactionRepository.save(transaction);
+
+        return transactionMapper.toDto(savedTransaction, sourceAccount);
+    }
 }

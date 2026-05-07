@@ -34,4 +34,13 @@ public class TransactionController {
                 transactionService.withdrawMoney(request)
         );
     }
+
+    @PostMapping("/transferMoney")
+    ResponseEntity<TransactionDto> transferMoney(
+            @RequestBody TransactionRequestDto request
+    ) {
+        return ResponseEntity.ok(
+                transactionService.transferMoney(request)
+        );
+    }
 }
