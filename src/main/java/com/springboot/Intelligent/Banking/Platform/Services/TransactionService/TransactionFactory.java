@@ -1,4 +1,4 @@
-package com.springboot.Intelligent.Banking.Platform.Services;
+package com.springboot.Intelligent.Banking.Platform.Services.TransactionService;
 
 import com.springboot.Intelligent.Banking.Platform.Entities.Account.Account;
 import com.springboot.Intelligent.Banking.Platform.Entities.Transaction.Transaction;

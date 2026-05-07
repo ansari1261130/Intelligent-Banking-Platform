@@ -2,13 +2,16 @@ package com.springboot.Intelligent.Banking.Platform.Controllers;
 
 import com.springboot.Intelligent.Banking.Platform.Dto.TransactionDto.TransactionRequestDto;
 import com.springboot.Intelligent.Banking.Platform.Dto.TransactionDto.TransactionDto;
-import com.springboot.Intelligent.Banking.Platform.Services.TransactionService;
+import com.springboot.Intelligent.Banking.Platform.Dto.TransferDto.TransferRequestDto;
+import com.springboot.Intelligent.Banking.Platform.Services.TransactionService.TransactionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @AllArgsConstructor
@@ -36,8 +39,8 @@ public class TransactionController {
     }
 
     @PostMapping("/transferMoney")
-    ResponseEntity<TransactionDto> transferMoney(
-            @RequestBody TransactionRequestDto request
+    ResponseEntity<CompletableFuture<TransactionDto>> transferMoney(
+            @RequestBody TransferRequestDto request
     ) {
         return ResponseEntity.ok(
                 transactionService.transferMoney(request)
