@@ -19,8 +19,8 @@ public class Account {
     private double accountBalance;
     @Enumerated(EnumType.STRING)
     private AccountType accountType;
-
-
+    @Column(nullable = false, unique = true,length = 4)
+    private Integer atmPin;
     @ManyToOne
     @JoinColumn(name = "customerId")
     private Customer customer;

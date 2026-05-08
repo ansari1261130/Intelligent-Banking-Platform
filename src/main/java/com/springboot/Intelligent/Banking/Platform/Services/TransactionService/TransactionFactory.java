@@ -26,7 +26,7 @@ public class TransactionFactory {
         transaction.setTransactionAmount(amount);
         transaction.setTransactionType(type);
         transaction.setTransactionMode(mode);
-        transaction.setTransactionStatus(status);
+        transaction.setTransactionStatus(TransactionStatus.PENDING);
 
         transaction.setTransactionDate(LocalDate.now());
         transaction.setTransactionTime(LocalDateTime.now());

@@ -18,46 +18,99 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final CustomerRepository customerRepository;
 
-    public ResponseEntity<AccountResponseDto> createAccount(AccountRequestDto request) {
+
+    public ResponseEntity<AccountResponseDto> createAccount(
+            AccountRequestDto request
+    ) {
+
         try {
-            if (request.getAccountBalance() < 1000) {
-                return ResponseEntity.badRequest().build();
+
+            // Minimum balance validation
+            if(request.getAccountBalance() < 1000){
+                return ResponseEntity.badRequest()
+                        .build();
             }
 
-            AccountType type;
-            try {
-                type = AccountType.valueOf(request.getAccountType().toUpperCase());
-            } catch (IllegalArgumentException e) {
-                return ResponseEntity.badRequest().build();
+            // ATM PIN validation
+            if(request.getAtmPin() < 1000 ||
+                    request.getAtmPin() > 9999){
+
+                throw new RuntimeException(
+                        "ATM PIN must be 4 digits"
+                );
             }
 
-            Customer customer = customerRepository
-                    .findByCustomerNumber(request.getCustomerNumber())
-                    .orElseThrow(() -> new RuntimeException("Customer not found"));
+            // Account type validation
+            AccountType type =
+                    AccountType.valueOf(
+                            request.getAccountType()
+                                    .toUpperCase()
+                    );
 
+            // Customer validation
+            Customer customer =
+                    customerRepository
+                            .findByCustomerNumber(
+                                    request.getCustomerNumber()
+                            )
+                            .orElseThrow(
+                                    () -> new RuntimeException(
+                                            "Customer not found"
+                                    )
+                            );
+
+            // Generate unique account number
+            long accountNumber =
+                    System.currentTimeMillis();
+
+            // Create account
             Account account = new Account();
-            account.setAccountBalance(request.getAccountBalance());
-            account.setAccountType(type);
-            account.setCustomer(customer);
 
-            Account savedAccount = accountRepository.save(account);
-
-            long accountNumber = (long)(Math.random()*100000000000L);
-            savedAccount.setAccountNumber(accountNumber);
-
-            accountRepository.save(savedAccount);
-
-            AccountResponseDto response = new AccountResponseDto(
-                    account.getAccountNumber(),
-                    account.getAccountBalance(),
-                    account.getAccountType().name()
+            account.setAccountNumber(
+                    accountNumber
             );
 
-            return ResponseEntity.ok(response);
+            account.setAccountBalance(
+                    request.getAccountBalance()
+            );
 
-        } catch (Exception e) {
+            account.setAccountType(
+                    type
+            );
+
+            account.setAtmPin(
+                    request.getAtmPin()
+            );
+
+            account.setCustomer(
+                    customer
+            );
+
+            Account savedAccount =
+                    accountRepository.save(
+                            account
+                    );
+
+            // Response
+            AccountResponseDto response =
+                    new AccountResponseDto(
+                            savedAccount.getAccountNumber(),
+                            savedAccount.getAccountBalance(),
+                            savedAccount.getAccountType()
+                                    .name()
+                    );
+
+            return ResponseEntity.ok(
+                    response
+            );
+
+        } catch(Exception e){
+
             e.printStackTrace();
-            return ResponseEntity.status(500).build();
+
+            return ResponseEntity
+                    .status(500)
+                    .build();
         }
     }
 }

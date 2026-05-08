@@ -30,20 +30,25 @@ public class TransactionController {
     }
 
     @PostMapping("/withdrawMoney")
-    ResponseEntity<TransactionDto> withdrawMoney(
+    public CompletableFuture<ResponseEntity<TransactionDto>> withdrawMoney(
             @RequestBody TransactionRequestDto request
     ) {
-        return ResponseEntity.ok(
-                transactionService.withdrawMoney(request)
-        );
+
+        return transactionService
+                .withdrawMoney(request)
+                .thenApply(
+                        ResponseEntity::ok
+                );
     }
 
     @PostMapping("/transferMoney")
-    ResponseEntity<CompletableFuture<TransactionDto>> transferMoney(
+    public CompletableFuture<ResponseEntity<TransactionDto>> transferMoney(
             @RequestBody TransferRequestDto request
-    ) {
-        return ResponseEntity.ok(
-                transactionService.transferMoney(request)
-        );
+        ) {
+            return transactionService
+                    .transferMoney(request)
+                    .thenApply(
+                    ResponseEntity::ok
+            );
     }
 }

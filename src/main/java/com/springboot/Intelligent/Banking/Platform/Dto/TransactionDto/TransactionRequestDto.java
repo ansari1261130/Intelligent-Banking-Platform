@@ -11,4 +11,6 @@ public class TransactionRequestDto {
     private String transactionMode;
     private String transactionType;
     private double amount;
+
+    private Integer atmPin;
 }

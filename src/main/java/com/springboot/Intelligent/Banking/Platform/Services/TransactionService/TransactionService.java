@@ -25,7 +25,7 @@ public class TransactionService {
     }
 
 
-    public TransactionDto withdrawMoney(
+    public CompletableFuture<TransactionDto> withdrawMoney(
             TransactionRequestDto request
     ) {
         return withdrawService.execute(request);
