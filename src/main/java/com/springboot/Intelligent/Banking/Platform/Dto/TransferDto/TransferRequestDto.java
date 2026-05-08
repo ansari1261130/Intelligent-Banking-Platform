@@ -7,5 +7,7 @@ public class TransferRequestDto {
 
     private Long sourceAccountNumber;
     private Long destinationAccountNumber;
+    private String transactionType;
+    private String transactionMode;
     private double amount;
 }

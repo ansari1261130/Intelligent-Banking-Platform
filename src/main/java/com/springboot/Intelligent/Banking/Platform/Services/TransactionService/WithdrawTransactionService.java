@@ -4,6 +4,8 @@ import com.springboot.Intelligent.Banking.Platform.Dto.TransactionDto.Transactio
 import com.springboot.Intelligent.Banking.Platform.Dto.TransactionDto.TransactionRequestDto;
 import com.springboot.Intelligent.Banking.Platform.Entities.Account.Account;
 import com.springboot.Intelligent.Banking.Platform.Entities.Transaction.Transaction;
+import com.springboot.Intelligent.Banking.Platform.Entities.Transaction.TransactionMode;
+import com.springboot.Intelligent.Banking.Platform.Entities.Transaction.TransactionStatus;
 import com.springboot.Intelligent.Banking.Platform.Entities.Transaction.TransactionType;
 import com.springboot.Intelligent.Banking.Platform.Repositories.AccountRepository;
 import com.springboot.Intelligent.Banking.Platform.Repositories.TransactionRepository;
@@ -55,7 +57,9 @@ public class WithdrawTransactionService {
                 transactionFactory.createTransaction(
                         account,
                         request.getAmount(),
-                        TransactionType.WITHDRAW
+                        TransactionType.valueOf(request.getTransactionType()),
+                        TransactionMode.valueOf(request.getTransactionMode()),
+                        TransactionStatus.SUCCESS
                 );
 
         Transaction savedTransaction =

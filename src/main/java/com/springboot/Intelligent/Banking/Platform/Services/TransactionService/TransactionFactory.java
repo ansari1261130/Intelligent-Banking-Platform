@@ -16,15 +16,17 @@ public class TransactionFactory {
     public Transaction createTransaction(
             Account account,
             double amount,
-            TransactionType type
+            TransactionType type,
+            TransactionMode mode,
+            TransactionStatus status
     ) {
 
         Transaction transaction = new Transaction();
 
         transaction.setTransactionAmount(amount);
         transaction.setTransactionType(type);
-        transaction.setTransactionMode(TransactionMode.UPI);
-        transaction.setTransactionStatus(TransactionStatus.SUCCESS);
+        transaction.setTransactionMode(mode);
+        transaction.setTransactionStatus(status);
 
         transaction.setTransactionDate(LocalDate.now());
         transaction.setTransactionTime(LocalDateTime.now());

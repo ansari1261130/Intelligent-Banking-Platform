@@ -8,5 +8,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class TransactionRequestDto {
     private Long accountNumber;
+    private String transactionMode;
+    private String transactionType;
     private double amount;
 }
