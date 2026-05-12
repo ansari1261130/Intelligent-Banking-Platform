@@ -1,5 +1,6 @@
 package com.springboot.Intelligent.Banking.Platform.Controllers;
 
+import com.springboot.Intelligent.Banking.Platform.Dto.CardDto.CardRequestDto;
 import com.springboot.Intelligent.Banking.Platform.Dto.TransactionDto.TransactionRequestDto;
 import com.springboot.Intelligent.Banking.Platform.Dto.TransactionDto.TransactionDto;
 import com.springboot.Intelligent.Banking.Platform.Dto.TransferDto.TransferRequestDto;
@@ -50,5 +51,15 @@ public class TransactionController {
                     .thenApply(
                     ResponseEntity::ok
             );
+    }
+
+    public CompletableFuture<ResponseEntity<TransactionDto>> cardWithdrawMoney(
+            @RequestBody CardRequestDto request
+    ) {
+        return transactionService
+                .cardWithdrawMoney(request)
+                .thenApply(
+                        ResponseEntity::ok
+                );
     }
 }

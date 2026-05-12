@@ -10,8 +10,7 @@ import com.springboot.Intelligent.Banking.Platform.Entities.Transaction.Transact
 import com.springboot.Intelligent.Banking.Platform.Repositories.AccountRepository;
 import com.springboot.Intelligent.Banking.Platform.Repositories.TransactionRepository;
 import com.springboot.Intelligent.Banking.Platform.Services.Common.AccountValidationService;
-import com.springboot.Intelligent.Banking.Platform.Services.CardService.CardValidationService;
-import com.springboot.Intelligent.Banking.Platform.Services.TransactionService.TransactionFactory;
+import com.springboot.Intelligent.Banking.Platform.Services.Common.CardValidationService;
 import com.springboot.Intelligent.Banking.Platform.mapper.TransactionMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

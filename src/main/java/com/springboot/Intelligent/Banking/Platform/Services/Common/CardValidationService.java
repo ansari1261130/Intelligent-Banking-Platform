@@ -1,4 +1,4 @@
-package com.springboot.Intelligent.Banking.Platform.Services.CardService;
+package com.springboot.Intelligent.Banking.Platform.Services.Common;
 
 import com.springboot.Intelligent.Banking.Platform.Entities.Account.Account;
 import org.springframework.stereotype.Service;

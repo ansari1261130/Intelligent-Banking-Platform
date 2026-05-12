@@ -1,5 +1,6 @@
 package com.springboot.Intelligent.Banking.Platform.Services.TransactionService;
 
+import com.springboot.Intelligent.Banking.Platform.Dto.CardDto.CardRequestDto;
 import com.springboot.Intelligent.Banking.Platform.Dto.TransactionDto.TransactionDto;
 import com.springboot.Intelligent.Banking.Platform.Dto.TransactionDto.TransactionRequestDto;
 import com.springboot.Intelligent.Banking.Platform.Dto.TransferDto.TransferRequestDto;
@@ -16,6 +17,7 @@ public class TransactionService {
     private final DepositTransactionService depositService;
     private final WithdrawTransactionService withdrawService;
     private final TransferTransactionService transferService;
+    private final CardTransactionService cardService;
 
 
     public TransactionDto depositMoney(
@@ -37,5 +39,11 @@ public class TransactionService {
             TransferRequestDto request
     ) {
         return transferService.execute(request);
+    }
+
+    public CompletableFuture<TransactionDto> cardWithdrawMoney(
+            CardRequestDto request
+    ) {
+        return cardService.execute(request);
     }
 }

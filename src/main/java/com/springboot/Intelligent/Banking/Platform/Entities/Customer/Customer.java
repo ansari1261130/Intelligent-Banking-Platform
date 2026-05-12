@@ -2,6 +2,7 @@ package com.springboot.Intelligent.Banking.Platform.Entities.Customer;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.springboot.Intelligent.Banking.Platform.Entities.Account.Account;
+import com.springboot.Intelligent.Banking.Platform.Entities.Cards.Card;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -37,4 +38,7 @@ public class Customer {
     // One customer can have multiple accounts
     @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
     private List<Account> accounts;
+
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    private List<Card> cards;
 }
